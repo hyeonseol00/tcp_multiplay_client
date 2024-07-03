@@ -2,9 +2,11 @@ using System;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Mail;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -244,17 +246,19 @@ public class NetworkManager : MonoBehaviour
     void HandleNormalPacket(byte[] packetData) {
         // 패킷 데이터 처리
         var response = Packets.Deserialize<Response>(packetData);
-        // Debug.Log($"HandlerId: {response.handlerId}, responseCode: {response.responseCode}, timestamp: {response.timestamp}");
-        
-        if (response.responseCode != 0 && !uiNotice.activeSelf) {
+		// Debug.Log($"HandlerId: {response.handlerId}, responseCode: {response.responseCode}, timestamp: {response.timestamp}");
+
+		if (response.responseCode != 0 && !uiNotice.activeSelf) {
             AudioManager.instance.PlaySfx(AudioManager.Sfx.LevelUp);
             StartCoroutine(NoticeRoutine(2));
             return;
         }
 
         if (response.data != null && response.data.Length > 0) {
-            if (response.handlerId == 0) {
-                GameManager.instance.GameStart();
+            if (response.handlerId == 0)
+			{
+                var data = Packets.Deserialize<InitialData>(response.data);
+				GameManager.instance.GameStart(data.x, data.y);
             }
             ProcessResponseData(response.data);
         }

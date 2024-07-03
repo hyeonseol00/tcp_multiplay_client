@@ -91,6 +91,18 @@ public class LocationUpdate
 }
 
 [ProtoContract]
+public class InitialData {
+	[ProtoMember(1)]
+	public string deviceId { get; set; }
+
+	[ProtoMember(2)]
+	public float x { get; set; }
+
+	[ProtoMember(3)]
+	public float y { get; set; }
+}
+
+[ProtoContract]
 public class Response {
     [ProtoMember(1)]
     public uint handlerId { get; set; }

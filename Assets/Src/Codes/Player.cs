@@ -5,6 +5,7 @@ using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -24,6 +25,11 @@ public class Player : MonoBehaviour
         spriter = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         myText = GetComponentInChildren<TextMeshPro>();
+    }
+
+    public void InitCoordinate(float x, float y)
+    {
+        transform.position = new Vector2(x, y);
     }
 
     void OnEnable() {

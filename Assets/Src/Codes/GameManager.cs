@@ -28,15 +28,17 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = targetFrameRate;
     }
 
-    public void GameStart() {
+    public void GameStart(float x, float y) {
         playerId = (uint)Random.Range(0, 4);
         player.deviceId = deviceId;
-        player.gameObject.SetActive(true);
+		player.gameObject.SetActive(true);
         hud.SetActive(true);
         GameStartUI.SetActive(false);
         isLive = true;
 
-        AudioManager.instance.PlayBgm(true);
+		player.InitCoordinate(x, y);
+
+		AudioManager.instance.PlayBgm(true);
         AudioManager.instance.PlaySfx(AudioManager.Sfx.Select);
     }
 
