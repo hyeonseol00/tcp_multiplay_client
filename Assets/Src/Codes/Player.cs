@@ -10,8 +10,10 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     public Vector2 inputVec;
+	public Vector2 targetVec;
     public float speed;
     public string deviceId;
+	public bool gottedResponse;
     public RuntimeAnimatorController[] animCon;
 
     Rigidbody2D rigid;
@@ -25,6 +27,7 @@ public class Player : MonoBehaviour
         spriter = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         myText = GetComponentInChildren<TextMeshPro>();
+		gottedResponse = true;
     }
 
     public void InitCoordinate(float x, float y)
@@ -53,8 +56,26 @@ public class Player : MonoBehaviour
         inputVec.x = Input.GetAxisRaw("Horizontal");
         inputVec.y = Input.GetAxisRaw("Vertical");
 
+		Vector2 nextVec = inputVec * speed * Time.deltaTime;
+
+		Vector2 sendVec;
+		if ((int)inputVec.x == 0 && (int)inputVec.y == 0)
+		{
+			sendVec.x = 0;
+			sendVec.y = 0;
+		}
+		else
+		{
+			sendVec.x = rigid.position.x + nextVec.x;
+			sendVec.y = rigid.position.y + nextVec.y;
+		}
+
         // 위치 이동 패킷 전송 -> 서버로
-        NetworkManager.instance.SendLocationUpdatePacket(rigid.position.x, rigid.position.y);
+		if (gottedResponse)
+		{
+			NetworkManager.instance.SendLocationUpdatePacket(sendVec.x, sendVec.y);
+			gottedResponse = false;
+		}
     }
 
 
@@ -69,8 +90,11 @@ public class Player : MonoBehaviour
         // rigid.velocity = inputVec;
 
         // 위치 이동
+		/*
         Vector2 nextVec = inputVec * speed * Time.fixedDeltaTime;
         rigid.MovePosition(rigid.position + nextVec);
+		*/
+		rigid.MovePosition(targetVec);
     }
 
     // Update가 끝난이후 적용

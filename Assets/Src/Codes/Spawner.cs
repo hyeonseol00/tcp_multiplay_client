@@ -18,12 +18,17 @@ public class Spawner : MonoBehaviour
         HashSet<string> newUsers = new HashSet<string>();
 
         foreach(LocationUpdate.UserLocation user in data.users) {
-            newUsers.Add(user.id);
+			if (GameManager.instance.deviceId != user.id) {
+				newUsers.Add(user.id);
 
-            GameObject player = GameManager.instance.pool.Get(user);
-            PlayerPrefab playerScript = player.GetComponent<PlayerPrefab>();
-            playerScript.UpdatePosition(user.x, user.y);
-        }
+				GameObject player = GameManager.instance.pool.Get(user);
+				PlayerPrefab playerScript = player.GetComponent<PlayerPrefab>();
+				playerScript.UpdatePosition(user.x, user.y);
+			}
+			else {
+				GameManager.instance.player.targetVec = new Vector2(user.x, user.y);
+			}
+		}
 
         foreach (string userId in currentUsers) {
             if (!newUsers.Contains(userId)) {

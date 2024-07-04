@@ -286,6 +286,7 @@ public class NetworkManager : MonoBehaviour
                 response = new LocationUpdate { users = new List<LocationUpdate.UserLocation>() };
             }
 
+			GameManager.instance.player.gottedResponse = true;
             Spawner.instance.Spawn(response);
         } catch (Exception e) {
             Debug.LogError($"Error HandleLocationPacket: {e.Message}");
